@@ -81,9 +81,9 @@ async def _do_skip_or_replay(CallbackQuery_or_message, chat_id, _, is_replay=Fal
     mention = CallbackQuery_or_message.from_user.mention
 
     if is_replay:
-        txt = f"<blockquote expandable><b>✧ ʀᴇ-ᴘʟᴀʏɪɴɢ 💝\n│ \n└ʙʏ : {mention} 📿 </b></blockquote>"
+        txt = f"<b>✧ ʀᴇ-ᴘʟᴀʏɪɴɢ 💝\n│ \n└ʙʏ : {mention} 📿 </b>"
     else:
-        txt = f"<blockquote expandable><b>✧ sᴛʀᴇᴀᴍ sᴋɪᴩᴩᴇᴅ 💝\n│ \n└ʙʏ : {mention} 📿 </b></blockquote>"
+        txt = f"<b>✧ sᴛʀᴇᴀᴍ sᴋɪᴩᴩᴇᴅ 💝\n│ \n└ʙʏ : {mention} 📿 </b>"
         popped = None
         try:
             popped = check.pop(0)
@@ -387,49 +387,49 @@ async def del_back_playlist(client, CallbackQuery, _):
         )
 
 
-# ── Progress bar timer (unchanged) ───────────────────────────────────────────
-async def markup_timer():
-    while not await asyncio.sleep(7):
-        active_chats = await get_active_chats()
-        for chat_id in active_chats:
-            try:
-                if not await is_music_playing(chat_id):
-                    continue
-                playing = db.get(chat_id)
-                if not playing:
-                    continue
-                duration_seconds = int(playing[0]["seconds"])
-                if duration_seconds == 0:
-                    continue
-                try:
-                    mystic = playing[0]["mystic"]
-                except Exception:
-                    continue
-                try:
-                    check = checker[chat_id][mystic.id]
-                    if check is False:
-                        continue
-                except Exception:
-                    pass
-                try:
-                    language = await get_lang(chat_id)
-                    _ = get_string(language)
-                except Exception:
-                    _ = get_string("en")
-                try:
-                    buttons = stream_markup_timer(
-                        _,
-                        chat_id,
-                        seconds_to_min(playing[0]["played"]),
-                        playing[0]["dur"],
-                    )
-                    await mystic.edit_reply_markup(
-                        reply_markup=InlineKeyboardMarkup(buttons)
-                    )
-                except Exception:
-                    continue
-            except Exception:
-                continue
+# # ── Progress bar timer (unchanged) ───────────────────────────────────────────
+# async def markup_timer():
+#     while not await asyncio.sleep(7):
+#         active_chats = await get_active_chats()
+#         for chat_id in active_chats:
+#             try:
+#                 if not await is_music_playing(chat_id):
+#                     continue
+#                 playing = db.get(chat_id)
+#                 if not playing:
+#                     continue
+#                 duration_seconds = int(playing[0]["seconds"])
+#                 if duration_seconds == 0:
+#                     continue
+#                 try:
+#                     mystic = playing[0]["mystic"]
+#                 except Exception:
+#                     continue
+#                 try:
+#                     check = checker[chat_id][mystic.id]
+#                     if check is False:
+#                         continue
+#                 except Exception:
+#                     pass
+#                 try:
+#                     language = await get_lang(chat_id)
+#                     _ = get_string(language)
+#                 except Exception:
+#                     _ = get_string("en")
+#                 try:
+#                     buttons = stream_markup_timer(
+#                         _,
+#                         chat_id,
+#                         seconds_to_min(playing[0]["played"]),
+#                         playing[0]["dur"],
+#                     )
+#                     await mystic.edit_reply_markup(
+#                         reply_markup=InlineKeyboardMarkup(buttons)
+#                     )
+#                 except Exception:
+#                     continue
+#             except Exception:
+#                 continue
 
 
 asyncio.create_task(markup_timer())
