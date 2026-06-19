@@ -186,15 +186,18 @@ async def thumbnail_toggle_callback(_, callback_query: CallbackQuery):
     enable = state == "on"
     await thumb_on(chat_id) if enable else await thumb_off(chat_id)
     
+    # ✅ Database se fresh status le
+    status = await is_thumbmode(chat_id)
+    
     # ✅ MESSAGE EDIT + COLOR CHANGE
     await callback_query.answer(
-        f"🖼 ᴛʜᴜᴍʙɴᴀɪʟ | {'ᴇɴᴀʙʟᴇᴅ ✅' if enable else 'ᴅɪsᴀʙʟᴇᴅ ❌'}",
-        show_alert=True,
+        f"🖼 ᴛʜᴜᴍʙɴᴀɪʟ | {'ᴇɴᴀʙʟᴇᴅ ✅' if status else 'ᴅɪsᴀʙʟᴇᴅ ❌'}",
+        show_alert=False,
     )
     # ✅ Button changes from GREEN to RED (or vice versa)
     await callback_query.edit_message_text(
-        thumbnail_panel_text(enable),
-        reply_markup=feature_markup(enable),
+        thumbnail_panel_text(status),
+        reply_markup=feature_markup(status),
         disable_web_page_preview=True,
     )
 
