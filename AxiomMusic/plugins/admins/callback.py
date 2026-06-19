@@ -432,4 +432,4 @@ async def del_back_playlist(client, CallbackQuery, _):
 #                 continue
 
 
-asyncio.create_task(markup_timer())
+# asyncio.create_task(markup_timer())
