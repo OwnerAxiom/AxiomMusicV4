@@ -388,48 +388,48 @@ async def del_back_playlist(client, CallbackQuery, _):
 
 
 # ── Progress bar timer (unchanged) ───────────────────────────────────────────
-async def markup_timer():
-    while not await asyncio.sleep(7):
-        active_chats = await get_active_chats()
-        for chat_id in active_chats:
-            try:
-                if not await is_music_playing(chat_id):
-                    continue
-                playing = db.get(chat_id)
-                if not playing:
-                    continue
-                duration_seconds = int(playing[0]["seconds"])
-                if duration_seconds == 0:
-                    continue
-                try:
-                    mystic = playing[0]["mystic"]
-                except Exception:
-                    continue
-                try:
-                    check = checker[chat_id][mystic.id]
-                    if check is False:
-                        continue
-                except Exception:
-                    pass
-                try:
-                    language = await get_lang(chat_id)
-                    _ = get_string(language)
-                except Exception:
-                    _ = get_string("en")
-                try:
-                    buttons = stream_markup_timer(
-                        _,
-                        chat_id,
-                        seconds_to_min(playing[0]["played"]),
-                        playing[0]["dur"],
-                    )
-                    await mystic.edit_reply_markup(
-                        reply_markup=InlineKeyboardMarkup(buttons)
-                    )
-                except Exception:
-                    continue
-            except Exception:
-                continue
+# async def markup_timer():
+#     while not await asyncio.sleep(7):
+#         active_chats = await get_active_chats()
+#         for chat_id in active_chats:
+#             try:
+#                 if not await is_music_playing(chat_id):
+#                     continue
+#                 playing = db.get(chat_id)
+#                 if not playing:
+#                     continue
+#                 duration_seconds = int(playing[0]["seconds"])
+#                 if duration_seconds == 0:
+#                     continue
+#                 try:
+#                     mystic = playing[0]["mystic"]
+#                 except Exception:
+#                     continue
+#                 try:
+#                     check = checker[chat_id][mystic.id]
+#                     if check is False:
+#                         continue
+#                 except Exception:
+#                     pass
+#                 try:
+#                     language = await get_lang(chat_id)
+#                     _ = get_string(language)
+#                 except Exception:
+#                     _ = get_string("en")
+#                 try:
+#                     buttons = stream_markup_timer(
+#                         _,
+#                         chat_id,
+#                         seconds_to_min(playing[0]["played"]),
+#                         playing[0]["dur"],
+#                     )
+#                     await mystic.edit_reply_markup(
+#                         reply_markup=InlineKeyboardMarkup(buttons)
+#                     )
+#                 except Exception:
+#                     continue
+#             except Exception:
+#                 continue
 
 
 asyncio.create_task(markup_timer())
