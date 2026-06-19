@@ -164,8 +164,14 @@ async def autoplay_set_language(_, callback_query: CallbackQuery, __):
     await set_autoplay_lang(chat_id, lang)
     await callback_query.answer(f"{convert_to_special_font('Language set to')} {LANGUAGES[lang]}", show_alert=False)
     
-    # STAY ON LANGUAGE SELECTION PAGE
-    await callback_query.edit_message_reply_markup(reply_markup=language_markup(lang))
+    # ✅ FIXED: Wapas main autoplay settings page pe jao
+    status = await is_autoplay(chat_id)
+    mood = await get_autoplay_mood(chat_id)
+    await callback_query.edit_message_text(
+        autoplay_text(status, lang, mood),
+        reply_markup=autoplay_markup(status),
+        disable_web_page_preview=True
+    )
 
 @app.on_callback_query(filters.regex(r"^autoplay_mood$") & ~BANNED_USERS)
 @ActualAdminCB
@@ -186,8 +192,14 @@ async def autoplay_set_mood(_, callback_query: CallbackQuery, __):
     await set_autoplay_mood(chat_id, mood)
     await callback_query.answer(f"{convert_to_special_font('Mood set to')} {MOODS[mood]}", show_alert=False)
     
-    # STAY ON MOOD SELECTION PAGE
-    await callback_query.edit_message_reply_markup(reply_markup=mood_markup(mood))
+    # ✅ FIXED: Wapas main autoplay settings page pe jao
+    status = await is_autoplay(chat_id)
+    lang = await get_autoplay_lang(chat_id)
+    await callback_query.edit_message_text(
+        autoplay_text(status, lang, mood),
+        reply_markup=autoplay_markup(status),
+        disable_web_page_preview=True
+    )
 
 @app.on_callback_query(filters.regex(r"^autoplay_back$") & ~BANNED_USERS)
 @ActualAdminCB
