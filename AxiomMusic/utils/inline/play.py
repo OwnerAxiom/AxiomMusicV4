@@ -53,27 +53,27 @@ def track_markup(_, videoid, user_id, channel, fplay):
     return buttons
 
 
-def stream_markup_timer(_, chat_id, played, dur):
-    print(f"DEBUG: stream_markup_timer called for {chat_id}")
-    
+async def get_autoplay_status(chat_id):
+    """Properly get autoplay status"""
     try:
-        loop = asyncio.get_event_loop()
-        if loop.is_running():
-            autoplay_status = loop.create_task(is_autoplay(chat_id))
-        else:
-            autoplay_status = loop.run_until_complete(is_autoplay(chat_id))
+        status = await is_autoplay(chat_id)
+        return bool(status)
     except:
-        autoplay_status = False
+        return False
+
+def stream_markup_timer(_, chat_id, played, dur):
+    # ✅ Properly await autoplay status
+    autoplay_status = asyncio.get_event_loop().run_until_complete(get_autoplay_status(chat_id))
     
-    autoplay_text = "𝐀ᴜᴛᴏᴘʟᴀʏ | 𝐎‌ɴ" if autoplay_status else "𝐀ᴜᴛᴏᴘʟᴀʏ | 𝐎‌ғғ"
+    autoplay_text = "𝐀ᴜᴛᴏᴘʟᴀʏ | 𝐎ɴ" if autoplay_status else "𝐀ᴜᴛᴏᴘʟʏ | 𝐎ғғ"
     autoplay_style = ButtonStyle.SUCCESS if autoplay_status else ButtonStyle.DANGER
     
     thumb_status = get_thumbnail_status(chat_id)
 
     thumb_text = (
-        "𝐓‌ʜᴜᴍʙ | 𝐎‌ɴ"
+        "𝐓ʜᴜᴍʙ | 𝐎ɴ"
         if thumb_status == "on"
-        else "𝐓‌ʜᴜᴍʙ | 𝐎‌ғғ"
+        else "𝐓ʜᴜᴍʙ | 𝐎ғғ"
     )
     
     thumb_style = (
@@ -93,7 +93,7 @@ def stream_markup_timer(_, chat_id, played, dur):
             InlineKeyboardButton(text=autoplay_text, callback_data=f"autoplay_from_player|{chat_id}", style=autoplay_style),
         ],
         [
-            InlineKeyboardButton("⪻ -𝟸5s", callback_data="seek_backward_25", style=random_style()),
+            InlineKeyboardButton("⪻ -5s", callback_data="seek_backward_25", style=random_style()),
             InlineKeyboardButton(text="↻", callback_data=f"ADMIN Replay|{chat_id}", style=random_style()),
             InlineKeyboardButton("+𝟸5s ⪼", callback_data="seek_forward_25", style=random_style()),
         ]
@@ -102,24 +102,18 @@ def stream_markup_timer(_, chat_id, played, dur):
 
 
 def stream_markup(_, chat_id):
-    try:
-        loop = asyncio.get_event_loop()
-        if loop.is_running():
-            autoplay_status = loop.create_task(is_autoplay(chat_id))
-        else:
-            autoplay_status = loop.run_until_complete(is_autoplay(chat_id))
-    except:
-        autoplay_status = False
+    # ✅ Properly await autoplay status
+    autoplay_status = asyncio.get_event_loop().run_until_complete(get_autoplay_status(chat_id))
     
-    autoplay_text = "𝐀ᴜᴛᴏᴘʟᴀʏ | 𝐎‌ɴ" if autoplay_status else "𝐀ᴜᴛᴏᴘʟᴀʏ | 𝐎‌ғғ"
+    autoplay_text = "𝐀ᴜᴛᴏᴘʟᴀʏ | 𝐎ɴ" if autoplay_status else "𝐀ᴜᴛᴏᴘʟʏ | 𝐎ғғ"
     autoplay_style = ButtonStyle.SUCCESS if autoplay_status else ButtonStyle.DANGER
     
     thumb_status = get_thumbnail_status(chat_id)
 
     thumb_text = (
-        "𝐓‌ʜᴜᴍʙ | 𝐎‌ɴ"
+        "𝐓ʜᴜᴍʙ | 𝐎ɴ"
         if thumb_status == "on"
-        else "𝐓‌ʜᴜᴍʙ | 𝐎‌ғғ"
+        else "𝐓ʜᴜᴍʙ | 𝐎ғғ"
     )
     
     thumb_style = (
