@@ -137,9 +137,9 @@ def feature_markup(status: bool):
 
 
 def thumbnail_panel_text(status: bool):
-    current = "ᴇɴᴀʙᴇᴅ ✅" if status else "ᴅɪsᴀʙʟᴇᴅ ❌"
+    current = "ᴇɴᴀʙʟᴇᴅ ✅" if status else "ᴅɪsᴀʙʟᴇᴅ ❌"
     return (
-        "<b>ᴛʜᴜᴍʙɴᴀɪʟ sᴇᴛᴛɴɢs</b>\n\n"
+        "<b>ᴛʜᴜᴍʙɴᴀɪʟ sᴇᴛᴛɪɴɢs</b>\n\n"
         f"<b>ᴄᴜʀʀᴇɴᴛ sᴛᴀᴛᴜs:</b> {current}\n\n"
         "<b>Quick use:</b> <code>/thumb on</code> | <code>/thumb off</code>"
     )
@@ -186,10 +186,12 @@ async def thumbnail_toggle_callback(_, callback_query: CallbackQuery):
     enable = state == "on"
     await thumb_on(chat_id) if enable else await thumb_off(chat_id)
     
+    # ✅ MESSAGE EDIT + COLOR CHANGE
     await callback_query.answer(
-        f"🖼 ᴛʜᴜᴍʙɴᴀɪʟ | {'ᴇɴᴀʙᴇᴅ' if enable else 'ᴅɪsᴀʙʟᴇᴅ'}",
+        f"🖼 ᴛʜᴜᴍʙɴᴀɪʟ | {'ᴇɴᴀʙʟᴇᴅ ✅' if enable else 'ᴅɪsᴀʙʟᴇᴅ ❌'}",
         show_alert=True,
     )
+    # ✅ Button changes from GREEN to RED (or vice versa)
     await callback_query.edit_message_text(
         thumbnail_panel_text(enable),
         reply_markup=feature_markup(enable),
@@ -289,7 +291,7 @@ async def show_bot_info(c: app, q: CallbackQuery):
 • ᴇsᴘᴏɴsᴇ ᴛɪᴍᴇ: ᴏᴘᴛɪᴍᴀ
 • ᴀᴘɪ ᴘɪɴɢ: {delta_ping * 1000:.3f} ms   
 
-ᴇᴠᴇʀʏᴛʜɴɢ ʟᴏᴋs ᴏᴏ!
+ᴇᴠᴇʀʏᴛʜɪɴɢ ʟᴏᴏᴋs ɢᴏᴏᴅ!
 """
     await q.answer(txt, show_alert=True)
 
@@ -297,7 +299,7 @@ async def show_bot_info(c: app, q: CallbackQuery):
 @languageCB
 async def support(client, CallbackQuery, _):
     await CallbackQuery.edit_message_text(
-        text="💌 ʜᴇʀᴇ ʀᴇ ꜱᴏᴇ ɪᴘᴏʀᴛᴀɴᴛ ʟɪɴᴋ.\nᴊɪɴ ᴘᴇᴀsᴇ...💞",
+        text="💌 ʜᴇʀᴇ ʀᴇ ꜱᴏᴍᴇ ɪᴍᴘᴏʀᴛᴀɴᴛ ʟɪɴᴋs.\nᴊɪɴ ᴘʟᴇᴀsᴇ...💞",
         reply_markup=InlineKeyboardMarkup(
             [
                 [
@@ -308,7 +310,7 @@ async def support(client, CallbackQuery, _):
                 ],
                 [
                     InlineKeyboardButton(
-                        text="⌯ sᴘᴘᴏʀᴛ ⌯", url=config.SUPPORT_CHAT
+                        text="⌯ sᴜᴘᴘᴏʀᴛ ⌯", url=config.SUPPORT_CHAT
                     ),
                     InlineKeyboardButton(
                         text="⌯ ᴜᴘᴅᴀᴛᴇs ⌯", url=config.SUPPORT_CHANNEL
