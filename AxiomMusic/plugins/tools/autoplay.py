@@ -253,15 +253,16 @@ async def autoplay_from_player_callback(_, callback_query: CallbackQuery, __):
 @app.on_callback_query(filters.regex(r"^back_to_player$") & ~BANNED_USERS)
 @ActualAdminCB
 async def back_to_player(_, callback_query: CallbackQuery, __):
-    chat_id = callback_query.message.chat.id
-    
-    # ✅ Player buttons wapas dikhao with updated autoplay status
     from AxiomMusic.utils.inline.play import stream_markup
     
-    markup = InlineKeyboardMarkup(stream_markup(_, chat_id))
+    chat_id = callback_query.message.chat.id
     
-    await callback_query.edit_message_text(
-        text="🎵 𝐏ʟᴀʏᴇʀ 𝐂ᴏɴᴛʀᴏʟs",
-        reply_markup=markup,
-        disable_web_page_preview=True,
-    )
+    # ✅ Player buttons wapas dikhao with updated status
+    try:
+        await callback_query.edit_message_text(
+            text="🎵 **ʟᴀᴇʀ ᴏɴᴛʀᴏʟs**",
+            reply_markup=InlineKeyboardMarkup(stream_markup(_, chat_id)),
+            disable_web_page_preview=True,
+        )
+    except:
+        await callback_query.answer("Back to player", show_alert=False)
