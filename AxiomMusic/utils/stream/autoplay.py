@@ -12,8 +12,8 @@ from config import LOGGER_ID
 # ==========================================
 # CONFIGURATION
 # ==========================================
-AUTOPLAY_BATCH_SIZE = 10
-AUTOPLAY_REFETCH_THRESHOLD = 3
+AUTOPLAY_BATCH_SIZE = 15
+AUTOPLAY_REFETCH_THRESHOLD = 4
 _autoplay_fetching = {}
 PLAYED_HISTORY = {}
 CHANNEL_INDEX = {}
