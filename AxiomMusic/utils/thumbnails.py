@@ -57,7 +57,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     except Exception as e:
         print(f"[ERROR] Metadata: {e}")
     
-    # Download album art - size 200x200 to fit inside glowing box
+    # Download album art - size 200x200
     album_size = 200
     album_img = Image.new("RGBA", (album_size, album_size), (76, 175, 80))
     if thumb_url:
@@ -74,9 +74,9 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
         except Exception as e:
             print(f"[ERROR] Album art: {e}")
     
-    # Album art INSIDE glowing box - centered
-    # Glowing box: x=75-320, y=80-380 → center album at x=95, y=100
-    template.paste(album_img, (95, 100), album_img)
+    # Album art INSIDE glowing box
+    # Glowing box is at approximately x=75-320, y=180-400
+    template.paste(album_img, (95, 200), album_img)
     
     # Fonts
     font_title = _get_font(FONT_TITLE, 42)
@@ -91,14 +91,14 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     if len(title_text) < len(title):
         title_text = title_text[:-3] + "…"
     
-    # Title - right of glowing box, top aligned with album art
-    title_x = 330
-    title_y = 100
+    # Title - right of album art, aligned with top of album art
+    title_x = 340
+    title_y = 200
     draw.text((title_x + 2, title_y + 2), title_text, fill=(0, 0, 0, 120), font=font_title)
     draw.text((title_x, title_y), title_text, fill=(255, 255, 255), font=font_title)
     
     # Channel + Views below title
-    subtitle_y = 150
+    subtitle_y = 250
     draw.text((title_x, subtitle_y), channel, fill=(220, 220, 220), font=font_subtitle)
     channel_width = draw.textlength(channel, font=font_subtitle)
     views_x = title_x + channel_width + 30
@@ -117,14 +117,13 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     current_time = f"{current_min}:{current_sec:02d}"
     
     # Progress bar is at approximately y=375
-    # Time text should be JUST ABOVE progress bar at y=345
-    # Progress bar starts at x≈100, ends at x≈1180
+    # Time text should be JUST ABOVE progress bar
     time_y = 345
     
-    # Current time - LEFT side, just above progress bar start
+    # Current time - LEFT side
     draw.text((100, time_y), current_time, fill=(255, 255, 255), font=font_time)
     
-    # Duration - RIGHT side, just above progress bar end
+    # Duration - RIGHT side
     dur_width = draw.textlength(duration, font=font_time)
     draw.text((1180 - dur_width, time_y), duration, fill=(255, 255, 255), font=font_time)
     
@@ -133,3 +132,4 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     final.save(output, "PNG", quality=95)
     
     return output
+    
