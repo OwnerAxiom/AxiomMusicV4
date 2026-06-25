@@ -68,7 +68,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
                     async with aiofiles.open(cache_file, "wb") as f:
                         await f.write(await r.read())
             album_img = Image.open(cache_file).resize((album_size, album_size), Image.LANCZOS).convert("RGBA")
-            album_img = _create_rounded_image(album_img, 20)
+            album_img = _create_rounded_image(album_img, 35)
             if os.path.exists(cache_file):
                 os.remove(cache_file)
         except Exception as e:
@@ -94,15 +94,23 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     # Title - right of album art, aligned with top of album art
     title_x = 480
     title_y = 160
-    draw.text((title_x + 2, title_y + 2), title_text, fill=(0, 0, 0, 120), font=font_title)
+    
+    # Green glow layers (3 layers for soft glow)
+    for i in range(3, 0, -1):
+        draw.text((title_x + i, title_y + i), title_text, 
+                  fill=(50, 180, 50, 80), font=font_title)
+    
+    # Main title - pure white
     draw.text((title_x, title_y), title_text, fill=(255, 255, 255), font=font_title)
     
-    # Channel + Views below title
+    # Channel - light gray-green (different from white)
     subtitle_y = 240
-    draw.text((title_x, subtitle_y), channel, fill=(220, 220, 220), font=font_subtitle)
+    draw.text((title_x, subtitle_y), channel, fill=(180, 220, 180), font=font_subtitle)
+    
+    # Views - slightly more faded
     channel_width = draw.textlength(channel, font=font_subtitle)
     views_x = title_x + channel_width + 30
-    draw.text((views_x, subtitle_y), views, fill=(190, 190, 190), font=font_subtitle)
+    draw.text((views_x, subtitle_y), views, fill=(150, 190, 150), font=font_subtitle)
     
     # Calculate current time
     try:
