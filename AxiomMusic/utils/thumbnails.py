@@ -126,14 +126,14 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     # Progress bar is at approximately y=375
     # Time text should be JUST ABOVE progress bar
-    time_y = 945
+    time_y = 745
     
     # Current time - LEFT side
     draw.text((100, time_y), current_time, fill=(255, 255, 255), font=font_time)
     
     # Duration - RIGHT side
     dur_width = draw.textlength(duration, font=font_time)
-    draw.text((1450 - dur_width, time_y), duration, fill=(255, 255, 255), font=font_time)
+    draw.text((1550 - dur_width, time_y), duration, fill=(255, 255, 255), font=font_time)
     
     # Save
     final = template.convert("RGB")
