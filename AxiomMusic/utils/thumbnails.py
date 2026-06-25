@@ -157,14 +157,14 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     current_time = f"{current_min}:{current_sec:02d}"
     
     # Time position
-    time_y = 500
+    time_y = 520
     
     # Current time - LEFT
-    draw.text((120, time_y), current_time, fill=(220, 255, 100), font=font_time)
+    draw.text((135, time_y), current_time, fill=(220, 255, 100), font=font_time)
     
     # Duration - RIGHT
     dur_width = draw.textlength(duration, font=font_time)
-    draw.text((1500 - dur_width, time_y), duration, fill=(220, 255, 100), font=font_time)
+    draw.text((1450 - dur_width, time_y), duration, fill=(220, 255, 100), font=font_time)
     
     # Save
     final = template.convert("RGB")
