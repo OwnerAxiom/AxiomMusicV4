@@ -101,16 +101,16 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
                   fill=(50, 180, 50, 80), font=font_title)
     
     # Main title - pure white
-    draw.text((title_x, title_y), title_text, fill=(255, 255, 255), font=font_title)
+    draw.text((title_x, title_y), title_text, fill=(220, 255, 100), font=font_title)
     
     # Channel - light gray-green (different from white)
     subtitle_y = 235
-    draw.text((title_x, subtitle_y), channel, fill=(180, 220, 180), font=font_subtitle)
+    draw.text((title_x, subtitle_y), channel, fill=(160, 200, 160), font=font_subtitle)
     
     # Views - slightly more faded
     channel_width = draw.textlength(channel, font=font_subtitle)
     views_x = title_x + channel_width + 30
-    draw.text((views_x, subtitle_y), views, fill=(150, 190, 150), font=font_subtitle)
+    draw.text((views_x, subtitle_y), views, fill=(130, 170, 130), font=font_subtitle)
     
     # Calculate current time
     try:
