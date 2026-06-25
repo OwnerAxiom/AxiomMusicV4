@@ -58,7 +58,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
         print(f"[ERROR] Metadata: {e}")
     
     # Download album art - size 200x200
-    album_size = 300
+    album_size = 310
     album_img = Image.new("RGBA", (album_size, album_size), (76, 175, 80))
     if thumb_url:
         try:
