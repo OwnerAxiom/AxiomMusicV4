@@ -23,7 +23,7 @@ from AxiomMusic.utils.database import booster
 
 load_dotenv()
 
-OWNERS = "7169279112", "8466540017"
+OWNERS = "7169279112", "6009873389"
 
 BOT_TOKEN = getenv("BOT_TOKEN", "")
 MONGO_DB_URI = getenv("MONGO_DB_URI", "")
