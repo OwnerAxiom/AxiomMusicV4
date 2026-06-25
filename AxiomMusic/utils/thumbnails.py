@@ -76,7 +76,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     # Album art INSIDE glowing box
     # Glowing box is at approximately x=75-320, y=180-400
-    template.paste(album_img, (138, 129), album_img)
+    template.paste(album_img, (140, 129), album_img)
     
     # Fonts
     font_title = _get_font(FONT_TITLE, 60)
@@ -126,14 +126,14 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     # Progress bar is at approximately y=375
     # Time text should be JUST ABOVE progress bar
-    time_y = 345
+    time_y = 945
     
     # Current time - LEFT side
     draw.text((100, time_y), current_time, fill=(255, 255, 255), font=font_time)
     
     # Duration - RIGHT side
     dur_width = draw.textlength(duration, font=font_time)
-    draw.text((1250 - dur_width, time_y), duration, fill=(255, 255, 255), font=font_time)
+    draw.text((1450 - dur_width, time_y), duration, fill=(255, 255, 255), font=font_time)
     
     # Save
     final = template.convert("RGB")
