@@ -2,6 +2,8 @@ kurigram
 aiofiles
 aiohttp
 apscheduler
+flask
+requests
 beautifulsoup4
 dnspython
 gitpython
