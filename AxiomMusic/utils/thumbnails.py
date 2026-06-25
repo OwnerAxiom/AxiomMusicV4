@@ -76,7 +76,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     # Album art INSIDE glowing box
     # Glowing box is at approximately x=75-320, y=180-400
-    template.paste(album_img, (132, 130), album_img)
+    template.paste(album_img, (131, 134), album_img)
     
     # Fonts
     font_title = _get_font(FONT_TITLE, 60)
