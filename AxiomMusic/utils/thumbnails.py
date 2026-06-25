@@ -58,7 +58,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
         print(f"[ERROR] Metadata: {e}")
     
     # Download album art - size 200x200
-    album_size = 310
+    album_size = 305
     album_img = Image.new("RGBA", (album_size, album_size), (76, 175, 80))
     if thumb_url:
         try:
@@ -76,7 +76,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     # Album art INSIDE glowing box
     # Glowing box is at approximately x=75-320, y=180-400
-    template.paste(album_img, (136, 131), album_img)
+    template.paste(album_img, (138, 129), album_img)
     
     # Fonts
     font_title = _get_font(FONT_TITLE, 60)
