@@ -114,6 +114,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     font_title = _get_font(FONT_TITLE, 60)
     font_subtitle = _get_font(FONT_NORMAL, 35)
     font_time = _get_font(FONT_NORMAL, 30)
+    font_requested = _get_font(FONT_TITLE, 28)  # f.ttf for requested by
     
     # Truncate title
     max_title_width = 830
@@ -143,6 +144,47 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     channel_width = draw.textlength(channel, font=font_subtitle)
     draw.text((title_x + channel_width + 12, subtitle_y), "|", fill=(210, 220, 210), font=font_subtitle)
     draw.text((title_x + channel_width + 32, subtitle_y), views, fill=(210, 220, 210), font=font_subtitle)
+    
+    # ============ REQUESTED BY + DEV (NEW SECTION) ============
+    requested_y = 290  # Channel/views ke niche
+    
+    # Clean user name (purane wale logic se - unidecode)
+    try:
+        from unidecode import unidecode
+        clean_name = re.sub(r'<[^>]+>', '', str(user_name))
+        clean_name = unidecode(clean_name).strip()
+    except:
+        clean_name = re.sub(r'<[^>]+>', '', str(user_name)).strip()
+    
+    # Empty check
+    if not clean_name:
+        clean_name = "AxiomUser"
+    
+    # Autoplay check
+    if clean_name.lower() in ["autoplay", "auto", "autobot"]:
+        clean_name = "Autoplay"
+    
+    # Accent color (lime green - title ka same color)
+    accent = (220, 255, 100)
+    
+    # "Requested By | " - gray color
+    prefix_text = "Requested By "
+    draw.text((title_x, requested_y), prefix_text, 
+              fill=(190, 190, 190), font=font_requested)
+    
+    # User name - accent color
+    prefix_width = draw.textlength(prefix_text, font=font_requested)
+    draw.text((title_x + prefix_width, requested_y), clean_name, 
+              fill=accent, font=font_requested)
+    
+    # Pipe + Dev credit
+    name_width = draw.textlength(clean_name, font=font_requested)
+    dev_start_x = title_x + prefix_width + name_width + 15
+    draw.text((dev_start_x, requested_y), "|", fill=(160, 160, 160), font=font_requested)
+    
+    dev_text = " Dev: CreativeAxiom"
+    draw.text((dev_start_x + 12, requested_y), dev_text, fill=(190, 190, 190), font=font_requested)
+    # ==========================================================
     
     # Calculate current time
     try:
