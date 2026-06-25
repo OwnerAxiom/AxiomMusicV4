@@ -29,7 +29,6 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     output = f"cache/{videoid}.png"
     os.makedirs("cache", exist_ok=True)
     
-    # Load template
     try:
         template = Image.open(TEMPLATE_PATH).convert("RGBA")
     except:
@@ -37,7 +36,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     draw = ImageDraw.Draw(template)
     
-    # Fetch YouTube metadata
+    # Fetch metadata
     url = f"https://www.youtube.com/watch?v={videoid}"
     title = "Unknown Song"
     duration = "00:00"
@@ -58,8 +57,8 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     except Exception as e:
         print(f"[ERROR] Metadata: {e}")
     
-    # Download album art
-    album_size = 220
+    # Download album art - size 200x200 to fit inside glowing box
+    album_size = 200
     album_img = Image.new("RGBA", (album_size, album_size), (76, 175, 80))
     if thumb_url:
         try:
@@ -69,24 +68,22 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
                     async with aiofiles.open(cache_file, "wb") as f:
                         await f.write(await r.read())
             album_img = Image.open(cache_file).resize((album_size, album_size), Image.LANCZOS).convert("RGBA")
-            album_img = _create_rounded_image(album_img, 25)
+            album_img = _create_rounded_image(album_img, 20)
             if os.path.exists(cache_file):
                 os.remove(cache_file)
         except Exception as e:
             print(f"[ERROR] Album art: {e}")
     
-    # Paste album art INSIDE the glowing box (left side)
-    # Glowing box is roughly at (75, 80) to (320, 380)
-    album_x = 85
-    album_y = 90
-    template.paste(album_img, (album_x, album_y), album_img)
+    # Album art INSIDE glowing box - centered
+    # Glowing box: x=75-320, y=80-380 → center album at x=95, y=100
+    template.paste(album_img, (95, 100), album_img)
     
-    # Load fonts
+    # Fonts
     font_title = _get_font(FONT_TITLE, 42)
     font_subtitle = _get_font(FONT_NORMAL, 22)
     font_time = _get_font(FONT_NORMAL, 22)
     
-    # Truncate title if too long
+    # Truncate title
     max_title_width = 620
     title_text = title
     while draw.textlength(title_text, font=font_title) > max_title_width and len(title_text) > 3:
@@ -94,22 +91,20 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     if len(title_text) < len(title):
         title_text = title_text[:-3] + "…"
     
-    # Draw title - right side of album art
-    title_x = 340
+    # Title - right of glowing box, top aligned with album art
+    title_x = 330
     title_y = 100
-    # Shadow
     draw.text((title_x + 2, title_y + 2), title_text, fill=(0, 0, 0, 120), font=font_title)
-    # Main text
     draw.text((title_x, title_y), title_text, fill=(255, 255, 255), font=font_title)
     
-    # Draw channel and views below title
+    # Channel + Views below title
     subtitle_y = 150
     draw.text((title_x, subtitle_y), channel, fill=(220, 220, 220), font=font_subtitle)
     channel_width = draw.textlength(channel, font=font_subtitle)
     views_x = title_x + channel_width + 30
     draw.text((views_x, subtitle_y), views, fill=(190, 190, 190), font=font_subtitle)
     
-    # Calculate current time (30% progress)
+    # Calculate current time
     try:
         parts = duration.split(":")
         total_seconds = int(parts[0]) * 60 + int(parts[1]) if len(parts) == 2 else 225
@@ -121,18 +116,20 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     current_sec = current_seconds % 60
     current_time = f"{current_min}:{current_sec:02d}"
     
-    # Draw current time - left side of progress bar
-    # Progress bar is roughly at y=370, time should be just above it
-    time_y = 340
-    draw.text((130, time_y), current_time, fill=(255, 255, 255), font=font_time)
+    # Progress bar is at approximately y=375
+    # Time text should be JUST ABOVE progress bar at y=345
+    # Progress bar starts at x≈100, ends at x≈1180
+    time_y = 345
     
-    # Draw total duration - right side of progress bar
+    # Current time - LEFT side, just above progress bar start
+    draw.text((100, time_y), current_time, fill=(255, 255, 255), font=font_time)
+    
+    # Duration - RIGHT side, just above progress bar end
     dur_width = draw.textlength(duration, font=font_time)
-    draw.text((820 - dur_width, time_y), duration, fill=(255, 255, 255), font=font_time)
+    draw.text((1180 - dur_width, time_y), duration, fill=(255, 255, 255), font=font_time)
     
     # Save
     final = template.convert("RGB")
     final.save(output, "PNG", quality=95)
     
     return output
-    
