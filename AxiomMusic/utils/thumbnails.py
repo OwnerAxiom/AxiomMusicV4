@@ -58,7 +58,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
         print(f"[ERROR] Metadata: {e}")
     
     # Download album art - size 200x200
-    album_size = 310
+    album_size = 305
     album_img = Image.new("RGBA", (album_size, album_size), (76, 175, 80))
     if thumb_url:
         try:
@@ -76,7 +76,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     # Album art INSIDE glowing box
     # Glowing box is at approximately x=75-320, y=180-400
-    template.paste(album_img, (131, 134), album_img)
+    template.paste(album_img, (135, 132), album_img)
     
     # Fonts
     font_title = _get_font(FONT_TITLE, 60)
@@ -105,11 +105,11 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     # Channel - light gray-green (different from white)
     subtitle_y = 235
-    draw.text((title_x, subtitle_y), channel, fill=(160, 200, 160), font=font_subtitle)
+    draw.text((title_x, subtitle_y), channel, fill=(210, 220, 210), font=font_subtitle)
     
     # Pipe + Views
     channel_width = draw.textlength(channel, font=font_subtitle)
-    draw.text((title_x + channel_width + 12, subtitle_y), "|", fill=(140, 180, 140), font=font_subtitle)
+    draw.text((title_x + channel_width + 12, subtitle_y), "|", fill=(210, 220, 210), font=font_subtitle)
     draw.text((title_x + channel_width + 32, subtitle_y), views, fill=(210, 220, 210), font=font_subtitle)
     
     # Calculate current time
