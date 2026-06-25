@@ -25,31 +25,34 @@ def _create_rounded_image(img, radius):
     result.paste(img, (0, 0), mask)
     return result
 
-def _add_soft_glow(img, glow_color=(100, 180, 100), glow_radius=20, glow_strength=100):
-    """Add soft glow around the image edges"""
-    # Create alpha mask
-    alpha = img.split()[3]
+def _add_soft_glow(img, glow_color=(90, 170, 90), num_layers=15):
+    """Add multiple soft glow layers around thumbnail - edges ko soft karega"""
+    # Create larger canvas for glow layers
+    expand_size = num_layers * 3
+    glow_size = (img.size[0] + expand_size * 2, img.size[1] + expand_size * 2)
+    glow_img = Image.new("RGBA", glow_size, (0, 0, 0, 0))
+    glow_draw = ImageDraw.Draw(glow_img)
     
-    # Create glow layer
-    glow = Image.new("RGBA", img.size, (0, 0, 0, 0))
-    glow_draw = ImageDraw.Draw(glow)
+    # Draw 15 layers of expanding rounded rectangles (soft fade effect)
+    for layer in range(num_layers, 0, -1):
+        opacity = int(35 * (layer / num_layers))  # 35 se 0 tak fade
+        expand = layer * 2
+        
+        glow_draw.rounded_rectangle(
+            [expand, expand, glow_size[0] - expand, glow_size[1] - expand],
+            radius=35 + layer,  # 35 se 50 tak
+            fill=(*glow_color, opacity)
+        )
     
-    # Draw glow around edges based on alpha
-    for y in range(img.size[1]):
-        for x in range(img.size[0]):
-            alpha_val = alpha.getpixel((x, y))
-            if alpha_val > 0 and alpha_val < 255:
-                # Edge pixel - add glow
-                glow_factor = (255 - alpha_val) / 255
-                alpha_glow = int(glow_strength * glow_factor)
-                glow.putpixel((x, y), (*glow_color, alpha_glow))
+    # Heavy blur for ultra-soft glow
+    glow_img = glow_img.filter(ImageFilter.GaussianBlur(15))
     
-    # Blur the glow for soft effect
-    glow = glow.filter(ImageFilter.GaussianBlur(glow_radius))
+    # Paste original image in center
+    paste_x = expand_size // 2
+    paste_y = expand_size // 2
+    glow_img.paste(img, (paste_x, paste_y), img if img.mode == "RGBA" else None)
     
-    # Composite glow with original image
-    result = Image.alpha_composite(glow, img)
-    return result
+    return glow_img
 
 async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     output = f"cache/{videoid}.png"
