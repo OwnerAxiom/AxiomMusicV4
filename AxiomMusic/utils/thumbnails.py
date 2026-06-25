@@ -76,11 +76,11 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     # Album art INSIDE glowing box
     # Glowing box is at approximately x=75-320, y=180-400
-    template.paste(album_img, (130, 125), album_img)
+    template.paste(album_img, (132, 130), album_img)
     
     # Fonts
-    font_title = _get_font(FONT_TITLE, 55)
-    font_subtitle = _get_font(FONT_NORMAL, 32)
+    font_title = _get_font(FONT_TITLE, 60)
+    font_subtitle = _get_font(FONT_NORMAL, 35)
     font_time = _get_font(FONT_NORMAL, 30)
     
     # Truncate title
@@ -107,10 +107,10 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     subtitle_y = 235
     draw.text((title_x, subtitle_y), channel, fill=(160, 200, 160), font=font_subtitle)
     
-    # Views - slightly more faded
+    # Pipe + Views
     channel_width = draw.textlength(channel, font=font_subtitle)
-    views_x = title_x + channel_width + 30
-    draw.text((views_x, subtitle_y), views, fill=(130, 170, 130), font=font_subtitle)
+    draw.text((title_x + channel_width + 12, subtitle_y), "|", fill=(140, 180, 140), font=font_subtitle)
+    draw.text((title_x + channel_width + 32, subtitle_y), views, fill=(210, 220, 210), font=font_subtitle)
     
     # Calculate current time
     try:
