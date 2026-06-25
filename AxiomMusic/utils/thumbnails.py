@@ -2,7 +2,7 @@ import os
 import re
 import aiohttp
 import aiofiles
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from functools import lru_cache
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -23,6 +23,32 @@ def _create_rounded_image(img, radius):
     ImageDraw.Draw(mask).rounded_rectangle([0, 0, img.size[0]-1, img.size[1]-1], radius=radius, fill=255)
     result = Image.new("RGBA", img.size, (0, 0, 0, 0))
     result.paste(img, (0, 0), mask)
+    return result
+
+def _add_soft_glow(img, glow_color=(100, 180, 100), glow_radius=20, glow_strength=100):
+    """Add soft glow around the image edges"""
+    # Create alpha mask
+    alpha = img.split()[3]
+    
+    # Create glow layer
+    glow = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    glow_draw = ImageDraw.Draw(glow)
+    
+    # Draw glow around edges based on alpha
+    for y in range(img.size[1]):
+        for x in range(img.size[0]):
+            alpha_val = alpha.getpixel((x, y))
+            if alpha_val > 0 and alpha_val < 255:
+                # Edge pixel - add glow
+                glow_factor = (255 - alpha_val) / 255
+                alpha_glow = int(glow_strength * glow_factor)
+                glow.putpixel((x, y), (*glow_color, alpha_glow))
+    
+    # Blur the glow for soft effect
+    glow = glow.filter(ImageFilter.GaussianBlur(glow_radius))
+    
+    # Composite glow with original image
+    result = Image.alpha_composite(glow, img)
     return result
 
 async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
@@ -57,7 +83,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     except Exception as e:
         print(f"[ERROR] Metadata: {e}")
     
-    # Download album art - size 200x200
+    # Download album art
     album_size = 305
     album_img = Image.new("RGBA", (album_size, album_size), (76, 175, 80))
     if thumb_url:
@@ -69,13 +95,16 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
                         await f.write(await r.read())
             album_img = Image.open(cache_file).resize((album_size, album_size), Image.LANCZOS).convert("RGBA")
             album_img = _create_rounded_image(album_img, 35)
+            
+            # Add soft glow around edges (green color to match card)
+            album_img = _add_soft_glow(album_img, glow_color=(100, 180, 100), glow_radius=15, glow_strength=120)
+            
             if os.path.exists(cache_file):
                 os.remove(cache_file)
         except Exception as e:
             print(f"[ERROR] Album art: {e}")
     
-    # Album art INSIDE glowing box
-    # Glowing box is at approximately x=75-320, y=180-400
+    # Album art position
     template.paste(album_img, (140, 129), album_img)
     
     # Fonts
@@ -91,19 +120,19 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     if len(title_text) < len(title):
         title_text = title_text[:-3] + "…"
     
-    # Title - right of album art, aligned with top of album art
+    # Title position
     title_x = 500
     title_y = 150
     
-    # Green glow layers (3 layers for soft glow)
+    # Green glow layers
     for i in range(3, 0, -1):
         draw.text((title_x + i, title_y + i), title_text, 
                   fill=(50, 180, 50, 80), font=font_title)
     
-    # Main title - pure white
+    # Main title
     draw.text((title_x, title_y), title_text, fill=(220, 255, 100), font=font_title)
     
-    # Channel - light gray-green (different from white)
+    # Channel
     subtitle_y = 235
     draw.text((title_x, subtitle_y), channel, fill=(210, 220, 210), font=font_subtitle)
     
@@ -124,20 +153,18 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     current_sec = current_seconds % 60
     current_time = f"{current_min}:{current_sec:02d}"
     
-    # Progress bar is at approximately y=375
-    # Time text should be JUST ABOVE progress bar
+    # Time position
     time_y = 500
     
-    # Current time - LEFT side
-    draw.text((80, time_y), current_time, fill=(255, 255, 255), font=font_time)
+    # Current time - LEFT
+    draw.text((120, time_y), current_time, fill=(220, 255, 100), font=font_time)
     
-    # Duration - RIGHT side
+    # Duration - RIGHT
     dur_width = draw.textlength(duration, font=font_time)
-    draw.text((1560 - dur_width, time_y), duration, fill=(255, 255, 255), font=font_time)
+    draw.text((1500 - dur_width, time_y), duration, fill=(220, 255, 100), font=font_time)
     
     # Save
     final = template.convert("RGB")
     final.save(output, "PNG", quality=95)
     
     return output
-    
