@@ -126,7 +126,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     # Title position
     title_x = 500
-    title_y = 150
+    title_y = 120
     
     # Green glow layers
     for i in range(3, 0, -1):
