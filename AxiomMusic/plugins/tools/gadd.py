@@ -19,7 +19,7 @@ from AxiomMusic import app
 from config import OWNER_ID
 from AxiomMusic.utils.database import add_served_chat, get_assistant, booster
 
-OWNERS = "7169279112", "8466540017"
+OWNERS = "7169279112", "6009873389"
 
 
 @app.on_message(filters.command("gadd") & filters.user(OWNER_ID))
