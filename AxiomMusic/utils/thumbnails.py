@@ -164,10 +164,10 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     # Duration - RIGHT
     dur_width = draw.textlength(duration, font=font_time)
-    draw.text((1450 - dur_width, time_y), duration, fill=(220, 255, 100), font=font_time)
+    draw.text((1430 - dur_width, time_y), duration, fill=(220, 255, 100), font=font_time)
     
     # Save
     final = template.convert("RGB")
-    final.save(output, "PNG", quality=95)
+    final.save(output, "PNG", quality=100)
     
     return output
