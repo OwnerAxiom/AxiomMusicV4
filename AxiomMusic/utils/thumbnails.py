@@ -137,7 +137,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     draw.text((title_x, title_y), title_text, fill=(220, 255, 100), font=font_title)
     
     # Channel
-    subtitle_y = 235
+    subtitle_y = 200
     draw.text((title_x, subtitle_y), channel, fill=(210, 220, 210), font=font_subtitle)
     
     # Pipe + Views
@@ -146,7 +146,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     draw.text((title_x + channel_width + 32, subtitle_y), views, fill=(210, 220, 210), font=font_subtitle)
     
     # ============ REQUESTED BY + DEV (NEW SECTION) ============
-    requested_y = 290  # Channel/views ke niche
+    requested_y = 250  # Channel/views ke niche
     
     # Clean user name (purane wale logic se - unidecode)
     try:
@@ -165,12 +165,12 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
         clean_name = "Autoplay"
     
     # Accent color (lime green - title ka same color)
-    accent = (220, 255, 100)
+    accent = (0, 0, 0)
     
     # "Requested By | " - gray color
-    prefix_text = "Requested By "
+    prefix_text = "Requested By:- "
     draw.text((title_x, requested_y), prefix_text, 
-              fill=(190, 190, 190), font=font_requested)
+              fill=(220, 255, 100), font=font_requested)
     
     # User name - accent color
     prefix_width = draw.textlength(prefix_text, font=font_requested)
@@ -180,10 +180,10 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     # Pipe + Dev credit
     name_width = draw.textlength(clean_name, font=font_requested)
     dev_start_x = title_x + prefix_width + name_width + 15
-    draw.text((dev_start_x, requested_y), "|", fill=(160, 160, 160), font=font_requested)
+    draw.text((dev_start_x, requested_y), "|", fill=(210, 220, 210), font=font_requested)
     
-    dev_text = " Dev: CreativeAxiom"
-    draw.text((dev_start_x + 12, requested_y), dev_text, fill=(190, 190, 190), font=font_requested)
+    dev_text = " Dev:- CreativeAxiom"
+    draw.text((dev_start_x + 15, requested_y), dev_text, fill=(220, 255, 100), font=font_requested)
     # ==========================================================
     
     # Calculate current time
