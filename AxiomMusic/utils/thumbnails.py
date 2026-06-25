@@ -58,7 +58,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
         print(f"[ERROR] Metadata: {e}")
     
     # Download album art - size 200x200
-    album_size = 320
+    album_size = 300
     album_img = Image.new("RGBA", (album_size, album_size), (76, 175, 80))
     if thumb_url:
         try:
@@ -76,15 +76,15 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     
     # Album art INSIDE glowing box
     # Glowing box is at approximately x=75-320, y=180-400
-    template.paste(album_img, (140, 140), album_img)
+    template.paste(album_img, (130, 125), album_img)
     
     # Fonts
     font_title = _get_font(FONT_TITLE, 55)
-    font_subtitle = _get_font(FONT_NORMAL, 28)
-    font_time = _get_font(FONT_NORMAL, 25)
+    font_subtitle = _get_font(FONT_NORMAL, 32)
+    font_time = _get_font(FONT_NORMAL, 30)
     
     # Truncate title
-    max_title_width = 800
+    max_title_width = 830
     title_text = title
     while draw.textlength(title_text, font=font_title) > max_title_width and len(title_text) > 3:
         title_text = title_text[:-1]
@@ -92,8 +92,8 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
         title_text = title_text[:-3] + "…"
     
     # Title - right of album art, aligned with top of album art
-    title_x = 480
-    title_y = 160
+    title_x = 500
+    title_y = 150
     
     # Green glow layers (3 layers for soft glow)
     for i in range(3, 0, -1):
@@ -104,7 +104,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     draw.text((title_x, title_y), title_text, fill=(255, 255, 255), font=font_title)
     
     # Channel - light gray-green (different from white)
-    subtitle_y = 240
+    subtitle_y = 235
     draw.text((title_x, subtitle_y), channel, fill=(180, 220, 180), font=font_subtitle)
     
     # Views - slightly more faded
