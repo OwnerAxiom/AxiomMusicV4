@@ -117,7 +117,7 @@ async def get_thumb(videoid: str, user_name: str = "AxiomUser") -> str:
     font_requested = _get_font(FONT_TITLE, 28)  # f.ttf for requested by
     
     # Truncate title
-    max_title_width = 830
+    max_title_width = 900
     title_text = title
     while draw.textlength(title_text, font=font_title) > max_title_width and len(title_text) > 3:
         title_text = title_text[:-1]
